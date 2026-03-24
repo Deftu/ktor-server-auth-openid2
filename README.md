@@ -40,8 +40,9 @@ Install the plugin within your Ktor server.
 install(Authentication) {
     steam("steam") {
         client = HttpClient(CIO) // Required for server-to-server verification
+
+        urlProvider = { "http://localhost:8080/auth/callback" }
         realm = "http://localhost:8080"
-        callbackUrl = "http://localhost:8080/auth/callback"
 
         validateSteam { principal ->
             // principal.steamId is a Long (SteamID64)
