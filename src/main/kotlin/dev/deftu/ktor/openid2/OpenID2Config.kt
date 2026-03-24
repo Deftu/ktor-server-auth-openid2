@@ -3,17 +3,15 @@
 package dev.deftu.ktor.openid2
 
 import io.ktor.client.HttpClient
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.auth.AuthenticationProvider
 import io.ktor.server.auth.Principal
-import io.ktor.utils.io.KtorDsl
 
-@KtorDsl
 public open class OpenID2Config(name: String?) : AuthenticationProvider.Config(name) {
     public lateinit var client: HttpClient
-
-    public lateinit var providerUrl: String
-    public lateinit var callbackUrl: String
-    public lateinit var realm: String
+    public var settings: OpenID2Settings? = null
+    public var providerLookup: (suspend ApplicationCall.(OpenID2Config) -> OpenID2Settings)? = null
+    public lateinit var urlProvider: suspend ApplicationCall.(OpenID2Config) -> String
 
     internal var authenticationFunction: suspend (OpenID2Principal) -> Principal? = { it }
 
@@ -21,10 +19,10 @@ public open class OpenID2Config(name: String?) : AuthenticationProvider.Config(n
         authenticationFunction = body
     }
 
-    public fun build(): OpenID2Provider {
-        require(::providerUrl.isInitialized) { "Provider URL must be set" }
-        require(::callbackUrl.isInitialized) { "Callback URL must be set" }
-        require(::realm.isInitialized) { "Provider Realm must be set" }
+    public open fun build(): OpenID2Provider {
+        require(::client.isInitialized) { "HttpClient must be initialized" }
+        require(::urlProvider.isInitialized) { "urlProvider must be initialized" }
+        require(settings != null || providerLookup != null) { "settings or providerLookup must be initialized" }
 
         return OpenID2Provider(this)
     }

@@ -18,7 +18,7 @@ fun main() {
             openid2("steam") {
                 client = HttpClient(CIO)
                 providerUrl = "https://steamcommunity.com/openid/login"
-                callbackUrl = "http://localhost:8080/auth/callback"
+                urlProvider = "http://localhost:8080/auth/callback"
                 realm = "http://localhost:8080"
             }
         }

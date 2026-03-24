@@ -17,7 +17,7 @@ fun main() {
         install(Authentication) {
             steam("steam") {
                 client = HttpClient(CIO)
-                callbackUrl = "http://localhost:8080/auth/callback"
+                urlProvider = "http://localhost:8080/auth/callback"
                 realm = "http://localhost:8080"
             }
         }
